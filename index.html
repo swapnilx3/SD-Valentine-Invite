@@ -1,0 +1,328 @@
+&lt;!DOCTYPE html&gt;
+&lt;html lang=&quot;en&quot;&gt;
+&lt;head&gt;
+&lt;meta charset=&quot;UTF-8&quot; /&gt;
+&lt;meta name=&quot;viewport&quot; content=&quot;width=device-width, initial-scale=1, viewport-
+fit=cover&quot; /&gt;
+&lt;title&gt;Divya...Will you be my Valentine?&lt;/title&gt;
+
+&lt;script src=&quot;https://cdn.jsdelivr.net/npm/canvas-
+confetti@1.9.3/dist/confetti.browser.min.js&quot;&gt;&lt;/script&gt;
+
+&lt;style&gt;
+:root {
+--bg1: #ffd6e7;
+--bg2: #ffeef6;
+--card: #ffffffcc;
+--yes: #ff3b7a;
+--yesHover: #ff1f68;
+}
+
+* { box-sizing: border-box; }
+
+body {
+margin: 0;
+min-height: 150svh;
+display: grid;
+place-items: center;
+background: radial-gradient(circle at top, var(--bg2), var(--bg1));
+font-family: system-ui, sans-serif;
+overflow-y: auto;;
+
+padding: 16px;
+}
+
+#confettiCanvas {
+position: fixed;
+inset: 0;
+width: 100vw;
+height: 100vh;
+pointer-events: none;
+z-index: 9999;
+}
+
+.card {
+width: min(720px, 92vw);
+padding: 26px 22px;
+background: var(--card);
+backdrop-filter: blur(10px);
+border-radius: 22px;
+text-align: center;
+box-shadow: 0 18px 60px rgba(0,0,0,.15);
+position: relative;
+z-index: 10;
+}
+
+.art {
+width: min(260px, 80vw);
+margin: 0 auto 10px;
+display: block;
+filter: drop-shadow(0 10px 14px rgba(0,0,0,.12));
+
+}
+
+h1 {
+font-size: clamp(26px, 4vw, 44px);
+margin: 12px 0 18px;
+}
+
+.button-zone {
+position: relative;
+width: min(520px, 92%);
+height: 150px;
+margin: 0 auto;
+touch-action: none;
+}
+
+button {
+position: absolute;
+top: 50%;
+transform: translateY(-50%);
+padding: 16px 24px;
+font-size: 18px;
+font-weight: 800;
+border-radius: 999px;
+border: none;
+cursor: pointer;
+box-shadow: 0 10px 24px rgba(0,0,0,.14);
+user-select: none;
+-webkit-tap-highlight-color: transparent;
+transition: transform .12s ease, background .12s ease;
+
+}
+
+#yesBtn {
+left: 18%;
+background: var(--yes);
+color: #fff;
+}
+#yesBtn:hover { background: var(--yesHover); }
+
+#noBtn {
+left: 62%;
+background: #e5e7eb;
+color: #111827;
+}
+
+.hint {
+margin-top: 10px;
+font-size: 13px;
+opacity: .7;
+}
+
+.result {
+display: none;
+margin-top: 18px;
+animation: pop .35s ease;
+}
+
+.result h2 {
+font-size: clamp(30px, 4.5vw, 46px);
+
+margin: 10px 0;
+}
+
+.fireworks {
+width: min(380px, 90vw);
+margin: 0 auto;
+display: block;
+}
+
+/* --- PHOTO POPUP STYLES --- */
+.floating-photo {
+position: fixed;
+width: min(150px, 30vw);
+height: min(150px, 30vw);
+object-fit: cover;
+border: 5px solid white;
+border-radius: 15px;
+box-shadow: 0 8px 20px rgba(0,0,0,0.2);
+z-index: 99999; /* Higher to be on top */
+animation: photoPop 0.5s ease-out forwards;
+}
+
+/* --- TEXT POPUP STYLES --- */
+.floating-text {
+position: fixed;
+font-weight: bold;
+font-size: clamp(20px, 5vw, 36px);
+color: #ff3b7a;
+text-shadow: 2px 2px 4px rgba(0,0,0,0.1);
+
+z-index: 99999; /* Higher to be on top */
+pointer-events: none;
+white-space: nowrap;
+animation: photoPop 0.5s ease-out forwards;
+}
+
+@keyframes photoPop {
+0% { transform: scale(0) rotate(-20deg); opacity: 0; }
+100% { transform: scale(1) rotate(var(--rot)); opacity: 1; }
+}
+
+@keyframes pop {
+from { transform: scale(.96); opacity: 0; }
+to { transform: scale(1); opacity: 1; }
+}
+@keyframes shake {
+0% { transform: translate(0, -50%); }
+25% { transform: translate(5px, -50%); }
+50% { transform: translate(-5px, -50%); }
+100% { transform: translate(0, -50%); }
+}
+.shaking {
+animation: shake 0.1s infinite !important;
+}
+&lt;/style&gt;
+&lt;/head&gt;
+
+&lt;body&gt;
+&lt;canvas id=&quot;confettiCanvas&quot;&gt;&lt;/canvas&gt;
+
+&lt;div id=&quot;photo-garden&quot;&gt;&lt;/div&gt;
+
+&lt;main class=&quot;card&quot;&gt;
+&lt;svg class=&quot;art&quot; viewBox=&quot;0 0 320 240&quot; xmlns=&quot;http://www.w3.org/2000/svg&quot;&gt;
+&lt;defs&gt;
+&lt;linearGradient id=&quot;fur&quot; x1=&quot;0&quot; x2=&quot;1&quot;&gt;
+&lt;stop offset=&quot;0&quot; stop-color=&quot;#f7c7a1&quot;/&gt;
+&lt;stop offset=&quot;1&quot; stop-color=&quot;#f2a97b&quot;/&gt;
+&lt;/linearGradient&gt;
+&lt;linearGradient id=&quot;heart&quot; x1=&quot;0&quot; x2=&quot;1&quot;&gt;
+&lt;stop offset=&quot;0&quot; stop-color=&quot;#ff4d7d&quot;/&gt;
+&lt;stop offset=&quot;1&quot; stop-color=&quot;#ff1f68&quot;/&gt;
+&lt;/linearGradient&gt;
+&lt;/defs&gt;
+&lt;path d=&quot;M250 50 C250 33 270 25 282 38 C294 25 314 33 314 50 C314 78 282
+92 282 106 C282 92 250 78 250 50Z&quot; fill=&quot;url(#heart)&quot;/&gt;
+&lt;path d=&quot;M90 120 C90 70 140 40 190 60 C240 40 290 70 290 120 C290 180
+240 210 190 210 C140 210 90 180 90 120Z&quot; fill=&quot;url(#fur)&quot;/&gt;
+&lt;path d=&quot;M110 92 L95 55 L140 78 Z&quot; fill=&quot;#f2a97b&quot;/&gt;
+&lt;path d=&quot;M270 92 L285 55 L240 78 Z&quot; fill=&quot;#f2a97b&quot;/&gt;
+&lt;circle cx=&quot;160&quot; cy=&quot;130&quot; r=&quot;8&quot;/&gt;
+&lt;circle cx=&quot;220&quot; cy=&quot;130&quot; r=&quot;8&quot;/&gt;
+&lt;path d=&quot;M190 144 C186 144 182 148 182 152 C182 160 190 164 190 170
+C190 164 198 160 198 152 C198 148 194 144 190 144Z&quot; fill=&quot;#ff7aa2&quot;/&gt;
+&lt;/svg&gt;
+
+&lt;h1&gt;Divya, will you be my valentine?&lt;/h1&gt;
+
+&lt;section class=&quot;button-zone&quot; id=&quot;zone&quot;&gt;
+&lt;button id=&quot;yesBtn&quot;&gt;Yes&lt;/button&gt;
+
+&lt;button id=&quot;noBtn&quot;&gt;No&lt;/button&gt;
+&lt;/section&gt;
+
+&lt;div class=&quot;hint&quot; id=&quot;hint&quot;&gt;you&#39;re in this too deep to say &quot;No&quot; now&lt;/div&gt;
+
+&lt;section class=&quot;result&quot; id=&quot;result&quot;&gt;
+&lt;h2&gt;YAY! ��&lt;/h2&gt;
+&lt;img class=&quot;fireworks&quot;
+src=&quot;https://media3.giphy.com/media/v1.Y2lkPTc5MGI3NjExOGVlM2sxejR2NTJpM
+WJrZ3lreWc5MjUwamdyajJwNGZicXgycGlyZSZlcD12MV9pbnRlcm5hbF9naWZfYnlf
+aWQmY3Q9Zw/FweFQlQdJ27mwqyB5l/giphy.gif&quot; alt=&quot;Fireworks&quot; /&gt;
+&lt;/section&gt;
+&lt;/main&gt;
+
+&lt;script&gt;
+const zone = document.getElementById(&quot;zone&quot;);
+const yesBtn = document.getElementById(&quot;yesBtn&quot;);
+const noBtn = document.getElementById(&quot;noBtn&quot;);
+const result = document.getElementById(&quot;result&quot;);
+const hint = document.getElementById(&quot;hint&quot;);
+
+const confettiCanvas = document.getElementById(&quot;confettiCanvas&quot;);
+function resizeConfettiCanvas() {
+const dpr = Math.max(1, window.devicePixelRatio || 1);
+confettiCanvas.width = Math.floor(window.innerWidth * dpr);
+confettiCanvas.height = Math.floor(window.innerHeight * dpr);
+}
+resizeConfettiCanvas();
+window.addEventListener(&quot;resize&quot;, resizeConfettiCanvas);
+
+const confettiInstance = confetti.create(confettiCanvas, { resize: false, useWorker:
+true });
+
+function fullScreenConfetti() {
+const end = Date.now() + 1600;
+(function frame() {
+confettiInstance({ particleCount: 12, spread: 90, startVelocity: 45, origin: { x:
+Math.random(), y: Math.random() * 0.3 } });
+if (Date.now() &lt; end) requestAnimationFrame(frame);
+})();
+}
+
+let yesScale = 1;
+function growYes() {
+yesScale = Math.min(2.2, yesScale + 0.1);
+yesBtn.style.transform = `translateY(-50%) scale(${yesScale})`;
+}
+
+function moveNo(px, py) {
+const z = zone.getBoundingClientRect();
+const b = noBtn.getBoundingClientRect();
+let dx = (b.left + b.width / 2) - px;
+let dy = (b.top + b.height / 2) - py;
+let mag = Math.hypot(dx, dy) || 1;
+let newLeft = Math.max(0, Math.min(z.width - b.width, (b.left - z.left) + (dx / mag)
+* 150));
+let newTop = Math.max(0, Math.min(z.height - b.height, (b.top - z.top) + (dy /
+mag) * 150));
+noBtn.style.left = newLeft + &quot;px&quot;;
+noBtn.style.top = newTop + &quot;px&quot;;
+
+noBtn.style.transform = &quot;none&quot;;
+noBtn.classList.add(&quot;shaking&quot;);
+growYes();
+}
+
+zone.addEventListener(&quot;pointermove&quot;, e =&gt; {
+const b = noBtn.getBoundingClientRect();
+const d = Math.hypot((b.left + b.width / 2) - e.clientX, (b.top + b.height / 2) -
+e.clientY);
+if (d &lt; 140) moveNo(e.clientX, e.clientY);
+});
+
+noBtn.addEventListener(&quot;click&quot;, e =&gt; e.preventDefault());
+
+yesBtn.addEventListener(&quot;click&quot;, () =&gt; {
+noBtn.classList.remove(&quot;shaking&quot;);
+zone.style.display = &quot;none&quot;;
+hint.style.display = &quot;none&quot;;
+result.style.display = &quot;block&quot;;
+fullScreenConfetti();
+
+// --- PHOTOS ---
+const myPhotos = [‘’];
+const garden = document.getElementById(&quot;photo-garden&quot;);
+
+myPhotos.forEach((photo, i) =&gt; {
+setTimeout(() =&gt; {
+const img = document.createElement(&#39;img&#39;);
+img.src = photo;
+
+img.className = &#39;floating-photo&#39;;
+img.style.left = (Math.random() * 80 + 5) + &#39;%&#39;;
+img.style.top = (Math.random() * 80 + 5) + &#39;%&#39;;
+img.style.setProperty(&#39;--rot&#39;, (Math.random() - 0.5) * 45 + &#39;deg&#39;);
+garden.appendChild(img);
+}, i * 400);
+});
+
+// --- MESSAGES ---
+const messages = [&quot;message here&quot;];
+messages.forEach((text, i) =&gt; {
+setTimeout(() =&gt; {
+const div = document.createElement(&#39;div&#39;);
+div.innerText = text;
+div.className = &#39;floating-text&#39;;
+div.style.left = (Math.random() * 70 + 15) + &#39;%&#39;;
+div.style.top = (Math.random() * 70 + 15) + &#39;%&#39;;
+div.style.setProperty(&#39;--rot&#39;, (Math.random() - 0.5) * 30 + &#39;deg&#39;);
+document.body.appendChild(div);
+}, i * 500 + 200);
+});
+});
+&lt;/script&gt;
+&lt;/body&gt;
+&lt;/html&gt;
